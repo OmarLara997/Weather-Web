@@ -1,0 +1,78 @@
+<!-- 
+ 
+Este arhivo sera abierto de forma local en el navegador al encender el servidor local en la raspberry pi. Este cada que el socket mande datos enviara dichos datos por metodo post mediante un formulario autorellenado y autoaccionado para mandarlos a un servidor donde los esperara un archivo que los registrara en una base de datos.
+
+Como un objetivo futuro planeo desarrollar un panel de administrador local para graficar datos de forma local o insatlar un sistema automatizado.
+
+ -->
+
+
+<!DOCTYPE html> 
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Temperature with Nodejs</title>
+    <style media="screen">
+      body {
+        display:flex;
+        align-items:center;
+        background: #34495e;
+        margin: 0px;
+      }
+      .container{display: none;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form method="post" action="http://maganet.000webhostapp.com/osx/wweb/receptor2.php?" name="myform" >
+        <input name="date" id="in_fec">
+        <input type="" name="temp" id="in_tem">
+        <input type="" name="hum" id="in_hum">
+        <input type="" name="pres" id="in_pre">
+        <input type="" name="alt" id="in_alt">
+        <input type="" name="suelo" id="in_sue">
+        <input type="" name="lluvia" id="in_llu">
+        <input type="" name="pass" id="pass">
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js" charset="utf-8"></script>
+    <script charset="utf-8">
+      const socket = io();
+        
+      socket.on('datos', function (data) {  
+
+        let d = new Date();
+      	let año = d.getFullYear();
+        let mes = (d.getMonth())+1;
+        let dia = d.getDate();
+        let hora = d.getHours();
+        let minuto = d.getMinutes();
+      	let fecha=minuto+"."+hora+"."+dia+"."+mes+"."+año;
+        // console.log(data+fecha);
+        
+        let str = data.toString();
+        // var str = "28.90,60.00,8654,1420.19,754,1";
+        let datos = str.split(',');
+  
+        let temp = datos[0];
+        let hum = datos[1];
+        let pres = datos[2];
+        let alt = datos[3];
+        let suelo = datos[4];
+        let lluvia = datos[5];
+
+        let in_fec = document.getElementById("in_fec").value=fecha;
+        let in_tem = document.getElementById("in_tem").value=temp;
+        let in_hum = document.getElementById("in_hum").value=hum;
+        let in_pre = document.getElementById("in_pre").value=pres;
+        let in_alt = document.getElementById("in_alt").value=alt;
+        let in_sue = document.getElementById("in_sue").value=suelo;
+        let in_llu = document.getElementById("in_llu").value=lluvia;
+        let pass = document.getElementById("pass").value='xfiles';
+        console.log(datos); 
+        document.myform.submit();
+        });
+    </script>
+  </body>
+</html>
